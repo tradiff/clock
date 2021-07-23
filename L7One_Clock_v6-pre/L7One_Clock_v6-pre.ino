@@ -5,7 +5,7 @@
 // Serial is set to 74880
 
 // uncomment #define nodeMCU to compile this for nodeMCU v1.0 (ESP-12E) instead of Arduino Pro Mini/Nano
-// #define nodeMCU
+#define nodeMCU
 // uncomment #define useWiFi to use WiFi/ntp, leave commented for nodeMCU + DS3231
 // Also check other parameters like ntp server and utc time offset further down when using WiFi/ntp!
 // #define useWiFi
@@ -15,7 +15,7 @@
 
 #ifdef nodeMCU
   #define FASTLED_ESP8266_RAW_PIN_ORDER           // this means we'll be using the raw esp8266 pin order -> GPIO_12, which is d6 on nodeMCU
-  #define LED_PIN 12                              // led data in connected to GPIO_12 (d6/nodeMCU)
+  #define LED_PIN 0                              // led data in connected to GPIO_0 (d3/nodeMCU)
 #else
   #define FASTLED_ALLOW_INTERRUPTS 0
   #define LED_PIN 6                               // led data in connected to d6 (arduino)
