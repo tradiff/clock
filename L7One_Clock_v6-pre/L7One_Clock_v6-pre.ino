@@ -354,7 +354,7 @@ void displayTime(time_t t, byte color, byte colorSpacing) {
     showDigit((second(t) / 10), color + colorSpacing * 6, 1);
     showDigit((second(t) % 10), color + colorSpacing * 7, 0);
   }
-  if ( second(t) % 2 == 0 ) showDots(2, second(t) * 4.25);                                // show : between hours and minutes on even seconds with the color cycling through the palette once per minute
+  showDots(2, second(t) * 4.25);                                // show : between hours and minutes with the color cycling through the palette once per minute
   lastSecond = second(t);
 }
 
