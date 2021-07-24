@@ -92,8 +92,8 @@ byte startColor = 0;                              // "index" for the palette col
 byte displayMode = 0;                             // 0 = 12h, 1 = 24h (will be saved to EEPROM once set using buttons)
 byte colorOffset = 32;                            // default distance between colors on the color palette used between digits/leds (in overlayMode)
 int colorChangeInterval = 1500;                   // interval (ms) to change colors when not in overlayMode (per pixel/led coloring uses overlayInterval)
-byte overlayMode = 0;                             // switch on/off (1/0) to use void colorOverlay(); (will be saved to EEPROM once set using buttons)
-int overlayInterval = 200;                        // interval (ms) to change colors in overlayMode
+byte overlayMode = 1;                             // switch on/off (1/0) to use void colorOverlay(); (will be saved to EEPROM once set using buttons)
+int overlayInterval = 1500;                        // interval (ms) to change colors in overlayMode
 
 byte btnRepeatCounter = 1;
 byte lastKeyPressed = 0;
@@ -299,7 +299,7 @@ void readLDR() {                                                                
 void colorOverlay() {                                                                                       // This "projects" colors on already drawn leds before showing leds in updateDisplay();
   for (int i = 0; i < LED_COUNT; i++) {                                                                     // check each led...
     if (leds[i])                                                                                            // ...and if it is lit...
-      leds[i] = ColorFromPalette(currentPalette, startColor + i * 2, brightness, LINEARBLEND);              // ...assign increasing color from current palette
+      leds[i] = ColorFromPalette(currentPalette, startColor * 2, brightness, LINEARBLEND);                  // ...assign color from current palette
   }
 }
 
