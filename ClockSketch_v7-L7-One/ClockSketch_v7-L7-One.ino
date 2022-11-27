@@ -147,7 +147,7 @@ uint8_t upperLimitLDR = 180;                      // everything above this value
 uint8_t lowerLimitLDR = 50;                       // everything below this value will cause minBrightness to be used
 uint8_t minBrightness = 30;                       // anything below this avgLDR value will be ignored
 const bool nightMode = true;                     // nightmode true -> if minBrightness is used, colorizeOutput() will use a single color for everything, using HSV
-const uint8_t nightColor[2] = { 0, 70 };          // hue 0 = red, fixed brightness of 70, https://github.com/FastLED/FastLED/wiki/FastLED-HSV-Colors
+const uint8_t nightColor[2] = { 0, 40 };          // hue 0 = red, fixed brightness of 70, https://github.com/FastLED/FastLED/wiki/FastLED-HSV-Colors
 float factorLDR = 1.0;                            // try 0.5 - 2.0, compensation value for avgLDR. Set dbgLDR true & define DEBUG and watch the serial monitor. Looking...
 const bool dbgLDR = false;                        // ...for values roughly in the range of 120-160 (medium room light), 40-80 (low light) and 0 - 20 in the dark
 #ifdef NODEMCU
@@ -180,12 +180,12 @@ uint16_t lastAvgLDR = 0;                          // last average LDR value we g
 const bool dotsBlinking = false;                                  // true = only light up dots on even seconds, false = always on
 const bool leadingZero = false;                                  // true = enable a leading zero, 9:00 -> 09:00, 1:30 -> 01:30...
 uint8_t displayMode = 1;                                         // 0 = 24h mode, 1 = 12h mode ("1" will also override setting that might be written to EEPROM!)
-uint8_t colorMode = 0;                                           // different color modes, setting this to anything else than zero will overwrite values written to eeprom, as above
+uint8_t colorMode = 3;                                           // different color modes, setting this to anything else than zero will overwrite values written to eeprom, as above
 uint16_t colorSpeed = 750;                                       // controls how fast colors change, smaller = faster (interval in ms at which color moves inside colorizeOutput();)
 const bool colorPreview = true;                                  // true = preview selected palette/colorMode using "8" on all positions for 3 seconds
 const uint8_t colorPreviewDuration = 3;                          // duration in seconds for previewing palettes/colorModes if colorPreview is enabled/true
 const bool reverseColorCycling = false;                          // true = reverse color movements
-const uint8_t brightnessLevels[3] {90, 140, 230};                // 0 - 255, brightness Levels (min, med, max) - index (0-2) will be saved to eeprom
+const uint8_t brightnessLevels[3] {40, 140, 230};                // 0 - 255, brightness Levels (min, med, max) - index (0-2) will be saved to eeprom
 uint8_t brightness = brightnessLevels[0];                        // default brightness if none saved to eeprom yet / first run
 /* Fading options--------------------------------------------------------------------------------------- */
 #ifdef FADING
@@ -754,7 +754,7 @@ void loop() {
   
   #ifdef FASTFORWARD                                                                       // if FASTFORWARD is defined...
     if ( millis() - lastFFStep >= 250 ) {                                                  // ...and 250ms have passed...
-      adjustTime(5);                                                                       // ...add 5 seconds to current time
+      adjustTime(30);                                                                       // ...add x seconds to current time
       lastFFStep = millis();
     }
   #endif
@@ -1435,7 +1435,7 @@ void colorizeOutput(uint8_t mode) {
   }
   #endif
    
-/*  // example for time based coloring
+  // time based coloring
   // for coloring based on current times the following will get local display time into
   // checkTime if autoDST is defined as the clock is running in utc time then
   #ifdef AUTODST
@@ -1445,20 +1445,25 @@ void colorizeOutput(uint8_t mode) {
   #endif
 
   // below if-loop simply checks for a given time and colors everything in green/blue accordingly
-  if ( hour(checkTime) > 6 && hour(checkTime) <= 22 ) {           // if hour > 6 AND hour <= 22 ---> 07:00 - 22:59
+
+  // Night time - use the nightColor (red)
+  if ( hour(checkTime) > 22 || hour(checkTime) < 6 ) {            // between 11pm and 6am
     for ( uint16_t i = 0; i < LED_COUNT; i++ ) {                  // for each position...
       if ( leds[i] ) {                                            // ...check led and if it's lit...
-        leds[i].setHSV(96, 255, brightness);                      // ...redraw with HSV color 96 -> green
-      }
-    }
-  } else {                                                        // ---> 23:00 - 06:59
-    for ( uint16_t i = 0; i < LED_COUNT; i++ ) {                  // for each position...
-      if ( leds[i] ) {                                            // ...check led and if it's lit...
-        leds[i].setHSV(160, 255, brightness);                     // ...redraw with HSV color 160 -> blue
+        leds[i].setHSV(nightColor[0], 255, nightColor[1] );       // ...redraw with nightColor
       }
     }
   }
-*/
+
+  // Evening - dim
+  else if ( hour(checkTime) > 17) {                               // after 6pm
+    brightness = brightnessLevels[0];
+  }
+
+  // Day - bright
+  else {
+    brightness = brightnessLevels[2];
+  }
 
   lastRun = millis();
 }
