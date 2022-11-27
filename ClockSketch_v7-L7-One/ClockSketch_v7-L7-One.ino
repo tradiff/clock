@@ -1,3 +1,5 @@
+// Board type: Generic ESP8266 Module
+
 /* -[ClockSketch v7.2]----------------------------------------------------------------------------------------
    https://www.instructables.com/ClockSketch-V7-Part-I/
    
@@ -128,8 +130,8 @@
   TimeChangeRule *tcr;
   //-----------------------------------------------
   /* US */
-  TimeChangeRule tcr1 = {"tcr1", First, Sun, Nov, 2, -360};   // utc -6h, valid from first sunday of november at 2am
-  TimeChangeRule tcr2 = {"tcr2", Second, Sun, Mar, 2, -300};  // utc -5h, valid from second sunday of march at 2am
+  TimeChangeRule tcr1 = {"tcr1", First, Sun, Nov, 2, -420};   // utc -7h, valid from first sunday of november at 2am
+  TimeChangeRule tcr2 = {"tcr2", Second, Sun, Mar, 2, -360};  // utc -6h, valid from second sunday of march at 2am
   //-----------------------------------------------
   /* Europe */
   // TimeChangeRule tcr1 = {"tcr1", Last, Sun, Oct, 3, 60};         // standard/winter time, valid from last sunday of october at 3am, UTC + 1 hour (+60 minutes) (negative value like -300 for utc -5h)
